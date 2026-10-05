@@ -1,0 +1,44 @@
+name: import-backend-bundle
+on:
+  push:
+    paths:
+      - 'press/import-bundle-url.txt'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read bundle URL
+        id: url
+        run: echo "url=$(tr -d '[:space:]' < press/import-bundle-url.txt)" >> "$GITHUB_OUTPUT"
+      - name: Download and extract
+        run: |
+          set -euo pipefail
+          curl -sSL --max-time 600 -o /tmp/bundle.tgz "${{ steps.url.outputs.url }}"
+          file /tmp/bundle.tgz
+          rm -rf /tmp/tqstage && mkdir -p /tmp/tqstage
+          tar -xzf /tmp/bundle.tgz -C /tmp/tqstage
+      - name: Keys guard + count check
+        run: |
+          set -euo pipefail
+          if find /tmp/tqstage -name '*keys*' | grep -q .; then echo "FAIL: keys present in bundle"; exit 1; fi
+          COUNT="$(find /tmp/tqstage -type f | wc -l)"
+          echo "files=$COUNT (expect 110)"
+          test "$COUNT" -eq 110
+      - name: Place backend/
+        run: |
+          set -euo pipefail
+          rm -rf backend
+          mkdir -p backend
+          cp -r /tmp/tqstage/. backend/
+      - name: Commit
+        run: |
+          set -euo pipefail
+          git config user.name "b2-import"
+          git config user.email "b.2@hellominds.ai"
+          git add -A backend
+          if git diff --cached --quiet; then echo "backend/ already in sync"; exit 0; fi
+          git commit -m "import backend bundle: 110 files, keys-free, pinned aebdd09"
+          git push
