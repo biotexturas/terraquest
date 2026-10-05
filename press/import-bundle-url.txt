@@ -1,2 +1,1 @@
-https://tmpfiles.org/dl/1791228648.af60dd7d3ca76226/wtAQfH8DMNPM/tq-backend-bundle.tgz
-
+git@github.com:jekeymer/terraquest-mint.git

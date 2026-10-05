@@ -10,29 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Read bundle URL
-        id: url
-        run: echo "url=$(tr -d '[:space:]' < press/import-bundle-url.txt)" >> "$GITHUB_OUTPUT"
-      - name: Download and extract
+      - name: Read bundle source
+        id: src
+        run: echo "remote=$(tr -d '[:space:]' < press/import-bundle-url.txt)" >> "$GITHUB_OUTPUT"
+      - name: Fetch pinned tree via SSH (read-only deploy key) + place backend/
+        env:
+          TQ_MINT_DEPLOY_KEY: ${{ vars.TQ_MINT_DEPLOY_KEY }}
         run: |
           set -euo pipefail
-          curl -sSL --max-time 600 -o /tmp/bundle.tgz "${{ steps.url.outputs.url }}"
-          file /tmp/bundle.tgz
-          rm -rf /tmp/tqstage && mkdir -p /tmp/tqstage
-          tar -xzf /tmp/bundle.tgz -C /tmp/tqstage
-      - name: Keys guard + count check
-        run: |
-          set -euo pipefail
-          if find /tmp/tqstage -name '*keys*' | grep -q .; then echo "FAIL: keys present in bundle"; exit 1; fi
-          COUNT="$(find /tmp/tqstage -type f | wc -l)"
+          PIN=aebdd09c55879209128f69b6eb6a5a68bd4eb4a1
+          mkdir -p ~/.ssh
+          umask 077
+          printf '%s\n' "$TQ_MINT_DEPLOY_KEY" > ~/.ssh/tq_deploy_key
+          export GIT_SSH_COMMAND="ssh -i $HOME/.ssh/tq_deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          MINT="$(mktemp -d)"
+          git -C "$MINT" init -q
+          git -C "$MINT" remote add origin "${{ steps.src.outputs.remote }}"
+          git -C "$MINT" fetch -q --depth=1 origin "$PIN"
+          STAGE="$(mktemp -d)"
+          git -C "$MINT" archive --format=tar FETCH_HEAD | tar -x -C "$STAGE" --exclude=keys
+          if find "$STAGE" -name '*keys*' | grep -q .; then echo "FAIL: keys present in bundle"; exit 1; fi
+          COUNT="$(find "$STAGE" -type f | wc -l)"
           echo "files=$COUNT (expect 110)"
           test "$COUNT" -eq 110
-      - name: Place backend/
-        run: |
-          set -euo pipefail
           rm -rf backend
           mkdir -p backend
-          cp -r /tmp/tqstage/. backend/
+          cp -r "$STAGE"/. backend/
       - name: Commit
         run: |
           set -euo pipefail
