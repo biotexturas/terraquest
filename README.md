@@ -4,7 +4,15 @@
 
 TerraQuest is a DePIN of Open Science Hardware that doubles as a web3 biotic-game console. A TerraScope — a DIY robotic microscope built from open hardware — captures living microbial behavior; an in-browser computer-vision pipeline turns each capture into a **datagram**; the datagram is minted on Solana with device-signed provenance, so anyone can verify where a piece of biological data came from.
 
-Built by [Biotexturas](https://biotexturas.org).
+## The story
+
+TerraQuest starts from a claim the project keeps returning to: the intelligence beneath our feet is real, measurable, and worth mapping. Soil microbes coordinate, compete, and switch strategy when local resources run out — behavior complex enough to be worth tracking, frame by frame.
+
+The instrument came first. The TerraScope is a DIY robotic microscope built from open hardware — a PCB, 3D-printed parts, a Raspberry Pi — designed so anyone can build their own and point it at a living colony. What it captures becomes a datagram: a signed record of a real biological observation, minted on Solana with device-signed provenance, so anyone can verify where the data came from.
+
+Around that loop a game grew. Players with a TerraScope track colonies at fine grain. Players with a phone and a petri dish explore wider terrain. Players with no hardware at all pick three frames from TerraScope's open collections and run the computer-vision pipeline in the browser. Every run, and every choice a player makes, becomes data the next run learns from. The first datagram — the Ancient Datagram — was minted on devnet on October 4, 2026.
+
+TerraQuest is built by [Biotexturas](https://biotexturas.org), a collective working on decentralized science, art and technology.
 
 ## What is in this repository
 
