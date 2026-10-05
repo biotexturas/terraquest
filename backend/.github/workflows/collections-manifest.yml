@@ -1,0 +1,57 @@
+name: collections-manifest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "provenance/**"
+      - ".github/workflows/collections-manifest.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Snapshot the served SOURCES id map
+        run: |
+          set -euo pipefail
+          mkdir -p provenance/manifests
+          curl -fsSL --max-time 120 "https://sites.hellominds.ai/b1/biotic-model/collections.html" -o "$RUNNER_TEMP/collections.html"
+          node provenance/extract_sources.js "$RUNNER_TEMP/collections.html" provenance/collections_ids.json
+
+      - name: Restore frame cache (resume downloads)
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/tqframes
+          key: tqframes-${{ hashFiles('provenance/collections_ids.json') }}-${{ github.run_id }}
+          restore-keys: |
+            tqframes-
+
+      - name: Hash all 14 collections into manifests + roots
+        run: python3 -u provenance/manifest_collections.py provenance/collections_ids.json provenance/manifests
+
+      - name: Save frame cache (progress preserved even on failure)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/tqframes
+          key: tqframes-${{ hashFiles('provenance/collections_ids.json') }}-${{ github.run_id }}
+
+      - name: Commit manifests and id snapshot
+        run: |
+          set -euo pipefail
+          git config user.name "b2-provenance"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add provenance/collections_ids.json provenance/manifests
+          if git diff --cached --quiet; then
+            echo "no manifest changes to commit"
+            exit 0
+          fi
+          git commit -m "provenance: 14-collection frame manifests + per-collection SHA-256 roots"
+          git pull --rebase origin main
+          git push origin main

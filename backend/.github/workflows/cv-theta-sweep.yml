@@ -1,0 +1,55 @@
+name: cv-theta-sweep
+on:
+  push:
+    paths:
+      - '.github/workflows/cv-theta-sweep.yml'
+      - 'cv/theta_sweep.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy opencv-python-headless scikit-image
+
+      - name: Theta sweep
+        run: |
+          cd cv
+          python theta_sweep.py 2>&1 | tee theta_sweep.log
+          cd ..
+
+      - name: Step summary
+        if: always()
+        run: |
+          if [ -f cv/theta_sweep.log ]; then cat cv/theta_sweep.log >> summary.txt; fi
+          if [ -f summary.txt ]; then cat summary.txt; fi
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-theta-sweep-output
+          path: cv/realrun/THETA_SWEEP.md
+          if-no-files-found: warn
+
+      - name: Commit results
+        run: |
+          git config user.name b2-cv
+          git config user.email b2@hellominds.ai
+          git add cv/realrun/THETA_SWEEP.md || true
+          git commit -m "cv: thesis theta comparison sweep results" || echo no-changes
+          git push

@@ -1,0 +1,26 @@
+name: idl-dump
+on:
+  push:
+    paths:
+      - ".github/workflows/idl-dump.yml"
+permissions:
+  contents: read
+  actions: read
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch latest green build artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          RID=$(gh api "repos/${{ github.repository }}/actions/workflows/anchor-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')
+          echo "Using anchor-build run $RID"
+          gh run download "$RID" -R "${{ github.repository }}" -n terraquest-mint-build -D dl
+      - name: Print IDL
+        run: |
+          echo "---IDL-BEGIN---"
+          cat dl/idl/terraquest_mint.json
+          echo ""
+          echo "---IDL-END---"

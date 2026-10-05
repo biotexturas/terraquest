@@ -1,0 +1,65 @@
+name: deploy-devnet
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - DEPLOY_TRIGGER.md
+permissions:
+  contents: read
+  actions: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Solana CLI (Agorave stable channel)
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+      - name: Fetch latest green build artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          RID=$(gh api "repos/${{ github.repository }}/actions/workflows/anchor-build.yml/runs?status=success&per_page=1" --jq '.workflow_runs[0].id')
+          echo "Using anchor-build run $RID"
+          gh run download "$RID" -R "${{ github.repository }}" -n terraquest-mint-build -D dl
+          mkdir -p target/deploy
+          cp dl/deploy/terraquest_mint.so target/deploy/
+          cp dl/deploy/terraquest_mint-keypair.json target/deploy/ 2>/dev/null || true
+          ls -la dl/deploy dl/idl
+      - name: Verify pinned program id matches declare_id and Anchor.toml
+        run: |
+          set -e
+          PID=$(solana-keygen pubkey keys/terraquest_mint-keypair.json)
+          echo "Pinned program id: $PID"
+          grep -q "$PID" Anchor.toml
+          grep -q "$PID" programs/terraquest-mint/src/lib.rs
+          echo "declare_id and Anchor.toml match the pinned keypair"
+      - name: Deploy to devnet
+        run: |
+          set -e
+          cp keys/deployer.json deployer.json
+          DEPLOYER=$(solana-keygen pubkey deployer.json)
+          echo "Deployer: $DEPLOYER"
+          solana config set -u devnet -k deployer.json
+          BAL=$(curl -s https://api.devnet.solana.com -X POST -H "Content-Type: application/json" -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getBalance\",\"params\":[\"$DEPLOYER\"]}" | python3 -c "import sys,json;print(json.load(sys.stdin)['result']['value'])")
+          echo "Deployer balance: $BAL lamports"
+          if [ "$BAL" -lt 2000000000 ]; then
+            echo "::error::deployer $DEPLOYER has only $BAL lamports - fund with >=2 SOL devnet test SOL (faucet.solana.com) and re-run. CI-IP airdrop is rate-limited, which is why funding is external."
+            exit 1
+          fi
+          PID=$(solana-keygen pubkey keys/terraquest_mint-keypair.json)
+          if solana program show "$PID" >/dev/null 2>&1; then
+            echo "Program already deployed on devnet:"
+          else
+            solana program deploy target/deploy/terraquest_mint.so --program-id keys/terraquest_mint-keypair.json
+            echo "Deployed by:"
+          fi
+          solana program show "$PID"
+      - name: Upload IDL artifact for b1 handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraquest-mint-devnet-idl
+          path: dl/idl/*.json
+          if-no-files-found: error

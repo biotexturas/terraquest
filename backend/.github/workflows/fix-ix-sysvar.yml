@@ -1,0 +1,65 @@
+name: fix-ix-sysvar
+on:
+  push:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch mint1.rs - Sysvar<Instructions> to address-checked UncheckedAccount
+        run: |
+          python3 - <<'PYEOF'
+          import sys
+          p = "programs/terraquest-mint/src/mint1.rs"
+          s = open(p, encoding="utf-8").read()
+          old_import = "load_instruction_at_checked, Instructions,"
+          new_import = "load_instruction_at_checked,"
+          old_field = "    pub instructions: Sysvar<'info, Instructions>,"
+          new_field = (
+              "    /// CHECK: address-pinned to the real instructions sysvar - the handler parses this account's data as the tx instruction list, so the address constraint is load-bearing (replaces Sysvar<Instructions>, which fails SolanaSysvar bounds on this toolchain - CI runs 6 and 16). Read path unchanged: load_instruction_at_checked in find_ed25519_attestation.\n"
+              "    #[account(address = anchor_lang::solana_program::sysvar::instructions::id())]\n"
+              "    pub instructions: UncheckedAccount<'info>,"
+          )
+          old_call = "find_ed25519_attestation(&ctx.accounts.instructions.to_account_info())"
+          new_call = "find_ed25519_attestation(ctx.accounts.instructions.as_ref())"
+          hard = [(old_field, new_field), (old_call, new_call)]
+          soft = [(old_import, new_import)]
+          def count(old):
+              return s.count(old)
+          for old, _ in hard + soft:
+              c = count(old)
+              if c > 1:
+                  print("::error::pattern matched %d times (expected 0 or 1): %s" % (c, old[:70]))
+                  sys.exit(1)
+          hard_matched = sum(1 for old, _ in hard if count(old) == 1)
+          soft_matched = sum(1 for old, _ in soft if count(old) == 1)
+          if hard_matched == 0:
+              if hard_matched + soft_matched == 0:
+                  print("already patched - nothing to do")
+                  sys.exit(0)
+              print("::error::inconsistent state: field/call patterns absent but import pattern present")
+              sys.exit(1)
+          if hard_matched != len(hard):
+              print("::error::only %d/%d hard patterns matched - refusing partial patch" % (hard_matched, len(hard)))
+              sys.exit(1)
+          total = 0
+          for old, new in hard + soft:
+              if count(old) == 1:
+                  s = s.replace(old, new)
+                  total += 1
+          open(p, "w", encoding="utf-8").write(s)
+          print("patched %s with %d edits" % (p, total))
+          PYEOF
+      - name: Commit and push if changed
+        run: |
+          git config user.name "jekeymer"
+          git config user.email "juan.keymer@gmail.com"
+          git add programs/terraquest-mint/src/mint1.rs
+          if git diff --cached --quiet; then
+            echo "no changes"
+            exit 0
+          fi
+          git commit -m "fix(program): instructions sysvar as address-checked UncheckedAccount - Sysvar<Instructions> fails SolanaSysvar bound (CI runs 6 and 16)"
+          git push origin HEAD:main

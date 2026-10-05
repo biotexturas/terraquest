@@ -1,0 +1,30 @@
+name: of-check
+on:
+  push:
+    paths:
+      - "press/of-check-marker.txt"
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Flow vs frame-diff inventory
+        run: |
+          set -uo pipefail
+          echo "=== [1] files with flow in path ==="
+          find cv -iname "*flow*" -print || true
+          echo "=== [2] optical-flow code hits (py/cpp/h) ==="
+          grep -rniE "calcOpticalFlow|OpticalFlowPyr|Lucas.?Kanade" cv --include=*.py --include=*.cpp --include=*.h --include=*.hpp | head -80 || true
+          echo "=== [3] optical flow word hits anywhere in cv ==="
+          grep -rniE "optical[ _-]?flow" cv | head -80 || true
+          echo "=== [4] LK metric / scene-static hits ==="
+          grep -rniE "scene.?static|LK_" cv --include=*.py --include=*.md | head -80 || true
+          echo "=== [5] frame-diff absdiff hits ==="
+          grep -rniE "absdiff|frame[ _-]?diff" cv --include=*.py --include=*.cpp | head -60 || true
+          echo "=== [6] ce_player_video1.py motion methods ==="
+          f=$(find cv -name "ce_player_video1.py" | head -1)
+          echo "file=$f"
+          if [ -n "$f" ]; then grep -niE "flow|absdiff|LK" "$f" | head -80 || true; fi
+          echo "=== [7] cv/pipeline listing ==="
+          ls -la cv/pipeline 2>/dev/null || true
+          echo "=== done ==="

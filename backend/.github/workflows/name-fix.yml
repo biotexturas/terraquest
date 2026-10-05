@@ -1,0 +1,49 @@
+name: name-fix
+
+on:
+  push:
+    paths:
+      - 'cv/social/render_video1_social.py'
+      - 'cv/realrun/render_video1_ce_view.py'
+      - 'cv/realrun/ce_player_video1.py'
+      - 'cv/realrun/CE_PLAYER_VIDEO1_RUN.md'
+      - 'cv/realrun/render_video1_viz.py'
+      - 'cv/realrun/README.md'
+      - '.github/workflows/name-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Replace z-spelling with s-spelling in labels
+        run: |
+          sed -i 's/Suzana/Susana/g' \
+            cv/social/render_video1_social.py \
+            cv/realrun/render_video1_ce_view.py \
+            cv/realrun/ce_player_video1.py \
+            cv/realrun/CE_PLAYER_VIDEO1_RUN.md \
+            cv/realrun/render_video1_viz.py \
+            cv/realrun/README.md
+          echo "remaining z-spelling (expected only Drive folder path + sweep tools):"
+          grep -rni "suzana" . --exclude-dir=.git || echo "NONE"
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet; then
+            echo "NO_CHANGES"
+          else
+            git config user.name "b2-automation"
+            git config user.email "b.2@hellominds.ai"
+            git add -A
+            git commit -m "labels: Susana spelling sweep (Juan directive 2026-10-04)"
+            git push
+          fi

@@ -1,0 +1,60 @@
+name: cv-visualize
+on:
+  push:
+    paths:
+      - '.github/workflows/cv-visualize.yml'
+      - 'cv/visualize.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  visualize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy opencv-python-headless scikit-image matplotlib
+
+      - name: Render cluster output
+        run: |
+          set -o pipefail
+          cd cv
+          python visualize.py 2>&1 | tee visualize.log
+          cd ..
+
+      - name: Step summary
+        if: always()
+        run: |
+          if [ -f cv/visualize.log ]; then cat cv/visualize.log >> summary.txt; fi
+          if [ -f summary.txt ]; then cat summary.txt; fi
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-visualize-output
+          path: |
+            cv/realrun/CLUSTERS_OUTPUT.png
+            cv/realrun/CLUSTERS_OUTPUT.md
+            cv/visualize.log
+          if-no-files-found: warn
+
+      - name: Commit figure and log
+        if: always()
+        run: |
+          git config user.name b2-cv
+          git config user.email b2@hellominds.ai
+          git add -A cv/ || true
+          git diff --cached --quiet || git commit -m "cv: cluster output figure (Drive frames)"
+          git push || echo push-failed

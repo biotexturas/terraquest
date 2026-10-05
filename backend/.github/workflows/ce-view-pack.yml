@@ -1,0 +1,63 @@
+name: ce-view-pack
+on:
+  push:
+    paths:
+      - ".github/workflows/ce-view-pack.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pack CE view jpg under chat payload limit
+        run: |
+          pip install pillow --quiet
+          python3 - <<'PY'
+          import os
+          from PIL import Image
+          src = 'cv/realrun/CE_PLAYER_VIDEO1_CE_VIEW.jpg'
+          dst = 'cv/realrun/CE_VIEW_PACK.jpg'
+          scale = 1400
+          while scale >= 400:
+              im = Image.open(src)
+              im.thumbnail((scale, scale))
+              im.save(dst, 'JPEG', quality=70, optimize=True)
+              sz = os.path.getsize(dst)
+              print('scale=%d size=%d' % (scale, sz))
+              if sz <= 28000:
+                  break
+              scale = int(scale * 0.8)
+          print('FINAL size=%d' % os.path.getsize(dst))
+          PY
+
+      - name: Publish download link (tmpfiles then uguu)
+        continue-on-error: true
+        run: |
+          F=cv/realrun/CE_VIEW_PACK.jpg
+          URL=""
+          R1=$(curl -s -m 45 -F "file=@$F" https://tmpfiles.org/api/v1/upload || true)
+          echo "tmpfiles=$R1"
+          T=$(printf '%s' "$R1" | grep -oE 'https://tmpfiles.org/[A-Za-z0-9/_.-]+' | head -n1 || true)
+          if [ -n "$T" ]; then URL=$(printf '%s' "$T" | sed 's#tmpfiles.org/#tmpfiles.org/dl/#'); fi
+          if [ -z "$URL" ]; then
+            R2=$(curl -s -m 45 -F "file=@$F" https://uguu.se/upload.php || true)
+            echo "uguu=$R2"
+            URL=$(printf '%s' "$R2" | grep -oE 'https://uguu.se/[A-Za-z0-9._-]+' | head -n1 || true)
+          fi
+          case "$URL" in https://*) ;; *) URL="FAILED" ;; esac
+          echo "FINAL_URL=$URL"
+          printf 'URL=%s\nPACK_BYTES=%s\n' "$URL" "$(stat -c%s $F)" > cv/realrun/CE_VIEW_URL.txt
+
+      - name: Commit pack and link
+        run: |
+          git config user.name "b2-cv-realrun"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add cv/realrun/CE_VIEW_PACK.jpg cv/realrun/CE_VIEW_URL.txt || true
+          if git diff --cached --quiet; then echo "nothing to commit"; else git commit -m "cv(realrun): CE view pack + download link"; fi
+          git pull --rebase origin main
+          git push origin main

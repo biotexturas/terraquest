@@ -1,0 +1,18 @@
+name: hash-media
+on:
+  push:
+    paths: [".github/workflows/hash-media.yml"]
+jobs:
+  hash:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          U="https://raw2.seadn.io/ethereum/0x495f947276749ce646f68ac8c248420045cb7b5e/43a8ac83e7563b97268765a9f45353/c743a8ac83e7563b97268765a9f45353.mp4"
+          curl -sSL -A "Mozilla/5.0" "$U" -o m.bin; E=$?
+          S=$(wc -c <m.bin | tr -d ' ')
+          H=$(sha256sum m.bin | cut -d' ' -f1)
+          D=$(md5sum m.bin | cut -d' ' -f1)
+          M="exit=$E size=$S sha256=$H md5=$D"
+          echo "$M"
+          echo "::notice title=HASH::$M"
+          echo "::warning title=HASH::$M"

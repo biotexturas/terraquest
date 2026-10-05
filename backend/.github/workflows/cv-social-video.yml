@@ -1,0 +1,105 @@
+name: cv-social-video
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "cv/social/**"
+      - ".github/workflows/cv-social-video.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  render-timelapse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --quiet "opencv-python-headless<5" numpy
+
+      - name: Install ffmpeg (absent on ubuntu-24.04 runner image)
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version
+
+      - name: Download time-lapse frames from Google Drive (ids reused from realrun-video1.yml)
+        run: |
+          set -euo pipefail
+          src=.github/workflows/realrun-video1.yml
+          names_line=$(grep -oE 'names=\([^)]*\)' "$src" | head -n 1)
+          ids_line=$(grep -oE 'ids=\([^)]*\)' "$src" | head -n 1)
+          if [ -z "$names_line" ] || [ -z "$ids_line" ]; then
+            echo "FAILED to extract names/ids arrays from $src" >&2
+            exit 1
+          fi
+          names=$(printf '%s' "$names_line" | sed -E 's/^names=\(//; s/\)$//')
+          ids=$(printf '%s' "$ids_line" | sed -E 's/^ids=\(//; s/\)$//')
+          read -r -a name_arr <<< "$names"
+          read -r -a id_arr <<< "$ids"
+          if [ "${#name_arr[@]}" -ne "${#id_arr[@]}" ] || [ "${#name_arr[@]}" -eq 0 ]; then
+            echo "FAILED array parse: names=${#name_arr[@]} ids=${#id_arr[@]}" >&2
+            exit 1
+          fi
+          echo "parsed ${#name_arr[@]} frame entries"
+          mkdir -p "$RUNNER_TEMP/pictures"
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          fetch() {
+            local url="$1" out="$2" minb="$3" attempt sz
+            for attempt in 1 2 3 4 5; do
+              if curl -fsSL -A "$UA" --max-time 300 "$url" -o "$out"; then
+                sz=$(stat -c %s "$out" 2>/dev/null || echo 0)
+                if [ "$sz" -ge "$minb" ]; then
+                  echo "ok $(basename "$out") $sz bytes"
+                  return 0
+                fi
+                echo "attempt $attempt: $(basename "$out") too small ($sz bytes)" >&2
+              else
+                echo "attempt $attempt: curl failed for $(basename "$out")" >&2
+              fi
+              sleep $((attempt * 3))
+            done
+            return 1
+          }
+          for i in "${!name_arr[@]}"; do
+            fetch "https://drive.usercontent.google.com/download?id=${id_arr[$i]}&export=download&confirm=t" "$RUNNER_TEMP/pictures/${name_arr[$i]}.jpg" 100000 || { echo "FAILED frame ${name_arr[$i]}" >&2; exit 1; }
+          done
+          ls -la "$RUNNER_TEMP/pictures"
+
+      - name: Render social timelapse video
+        run: |
+          set -euo pipefail
+          python cv/social/render_video1_social.py \
+            --frames "$RUNNER_TEMP/pictures" \
+            --results cv/realrun/ce_player_video1_results.json \
+            --out cv/realrun/CE_PLAYER_VIDEO1_TIMELAPSE.mp4
+
+      - name: Verify encode
+        run: |
+          set -euo pipefail
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name,width,height -of csv=p=0 cv/realrun/CE_PLAYER_VIDEO1_TIMELAPSE.mp4
+          ffprobe -v error -show_entries format=duration,size -of default=nw=1 cv/realrun/CE_PLAYER_VIDEO1_TIMELAPSE.mp4
+          sz=$(stat -c %s cv/realrun/CE_PLAYER_VIDEO1_TIMELAPSE.mp4)
+          test "$sz" -gt 500000
+
+      - name: Commit video back to the repo
+        run: |
+          set -euo pipefail
+          git config user.name "b2-cv-social-video"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add cv/realrun/CE_PLAYER_VIDEO1_TIMELAPSE.mp4 || true
+          if git diff --cached --quiet; then
+            echo "no video changes to commit"
+            exit 0
+          fi
+          git commit -m "cv(social): CE_Player video1 timelapse mp4 for social posting (1440x1080 h264)"
+          git pull --rebase origin main
+          git push origin main

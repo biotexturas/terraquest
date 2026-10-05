@@ -1,0 +1,89 @@
+name: realrun-video1
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "cv/realrun/**"
+      - ".github/workflows/realrun-video1.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  ce-player-video1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --quiet opencv-python-headless numpy
+
+      - name: Download frames and TLD npz from Google Drive
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/pictures"
+          names=(image0009 image0010 image0011 image0012 image0013 image0014 image0015 image0016 image0017 image0018 image0019 image0020)
+          ids=(1_MOHs3TMhT3oZKr27joL6ZSdwVhjHd-w 1NkvVeGZUFlzVpjhGkNyEuQrLBjublqCq 1EeyFzlfOvKa93yizSSMV3M2meWG7A5TB 1597QZ4G54qHFT55HZZb2fgToXjZ4eFvo 1Wr6CQ-KFGmccg6RI7QLLt1T3tFzraS1N 1afhFnsn4v8rcynnolK-RXrFfeK9EowXV 139mMXZhPePOj1-_S9iC9mYd6gDfxIM5e 1yCdVuS6ePcq_zAG65SMnumevjFu77wlV 1TdmtVu8iOJ_LvStVGMoKkW4k54fDV3mw 1N5rpdfa6Rg_ol031tTecJUZCNkxAOaMt 1rQLnx0KPbwrw88-xNRMcpjH0zB1InzHm 1ayjTrAfGVp2nD-0cGeAVkc-_V4T8O5Tz)
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+          fetch() {
+            local url="$1" out="$2" minb="$3" attempt sz
+            for attempt in 1 2 3 4 5; do
+              if curl -fsSL -A "$UA" -w " http=%{http_code}" --max-time 300 "$url" -o "$out"; then
+                sz=$(stat -c %s "$out" 2>/dev/null || echo 0)
+                if [ "$sz" -ge "$minb" ]; then echo " ok $(basename "$out") $sz bytes"; return 0; fi
+                echo "attempt $attempt: $(basename "$out") too small ($sz bytes)" >&2
+                head -c 300 "$out" >&2 || true
+                echo >&2
+              else
+                echo "attempt $attempt: curl failed for $(basename "$out")" >&2
+              fi
+              sleep $((attempt * 3))
+            done
+            return 1
+          }
+          for i in "${!names[@]}"; do
+            fetch "https://drive.usercontent.google.com/download?id=${ids[$i]}&export=download&confirm=t" "$RUNNER_TEMP/pictures/${names[$i]}.jpg" 1000000 || { echo "FAILED frame ${names[$i]}" >&2; exit 1; }
+          done
+          fetch "https://drive.usercontent.google.com/download?id=1CuCRxkmLKnZDc84r7VTZw87s9ukcNiWj&export=download&confirm=t" "$RUNNER_TEMP/data.npz" 400 || { echo "FAILED data.npz" >&2; exit 1; }
+          ls -la "$RUNNER_TEMP/pictures"
+          echo "npz bytes: $(stat -c %s "$RUNNER_TEMP/data.npz")"
+
+      - name: Run CE_Player validation
+        if: always()
+        run: |
+          set -o pipefail
+          python cv/realrun/ce_player_video1.py --frames "$RUNNER_TEMP/pictures" --npz "$RUNNER_TEMP/data.npz" 2>&1 | tee "$RUNNER_TEMP/run_log.txt"
+
+      - name: Render annotated visualization
+        run: |
+          set -euo pipefail
+          python cv/realrun/render_video1_viz.py --frames "$RUNNER_TEMP/pictures" --npz "$RUNNER_TEMP/data.npz"
+
+      - name: Render CE_Player diff view (white clusters + stats blocks)
+        run: |
+          set -euo pipefail
+          python cv/realrun/render_video1_ce_view.py --frames "$RUNNER_TEMP/pictures"
+
+      - name: Commit results back to the repo
+        if: always()
+        run: |
+          set -eux pipefail
+          cp "$RUNNER_TEMP/run_log.txt" cv/realrun/ce_player_video1_run_log.txt || true
+          git config user.name "b2-cv-realrun"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add cv/realrun/ce_player_video1_run_log.txt || true
+          git add cv/realrun/ce_player_video1_results.json || true
+          git add cv/realrun/CE_PLAYER_VIDEO1_VIZ.jpg || true
+          git add cv/realrun/CE_PLAYER_VIDEO1_CE_VIEW.jpg || true
+          if git diff --cached --quiet; then
+            echo "no results to commit"
+            exit 0
+          fi
+          git commit -m "cv(realrun): video1 CE_Player metrics + annotated viz from CI"
+          git pull --rebase origin main
+          git push origin main

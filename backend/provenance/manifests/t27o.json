@@ -1,0 +1,189 @@
+{
+ "section": "t27o",
+ "label": "27-ovni",
+ "count": 30,
+ "root": "40da5ecb0d9b3e75439f0caed6eafcc328a8816456c772976ae559f8fba5005b",
+ "root_definition": "sha256 over one line per frame: <filename> space <sha256> space <size>, LF-terminated, manifest order",
+ "frames": [
+  {
+   "filename": "img0000.jpg",
+   "drive_id": "1fKuqlki9mOR6lSxgyXNAjPhDMF9PxtBi",
+   "sha256": "06572821ca691e413b836d25054d65d30e7c31e21c4641252eb779dd2df70ef7",
+   "size": 4582751
+  },
+  {
+   "filename": "img0001.jpg",
+   "drive_id": "1EI7LSbRSPVPHZ07nt0hIhljcMLFI0qmt",
+   "sha256": "dabeab4a6a46154530d02f05c5fde36ec26bbc579016c9dcd0723b370b31e633",
+   "size": 4588731
+  },
+  {
+   "filename": "img0002.jpg",
+   "drive_id": "1en7IGwqpcSRmPcAggI4Naa8FDl1o-WRX",
+   "sha256": "dbcb597242ed83cebbaf404c85aa7df665050c95e7cb9497157c063419fae06a",
+   "size": 4590229
+  },
+  {
+   "filename": "img0003.jpg",
+   "drive_id": "1e5roRJUNdoccXxD-D52RgRfIgdKf0fLK",
+   "sha256": "349a3ecafb489620201ea8a335fc4040e2f50acd2332ea9f25baad184551524e",
+   "size": 4588508
+  },
+  {
+   "filename": "img0004.jpg",
+   "drive_id": "11TfXRq0ByVqbMnIYHiEOQMoYzkFyUEix",
+   "sha256": "638cd36afbb61bbbcebe938b0c15817a678406d7f0b5940d83aabc11bc2b5138",
+   "size": 4590571
+  },
+  {
+   "filename": "img0005.jpg",
+   "drive_id": "1NfyomnvFBf0QHkLIWt_lUZgSMvletAmP",
+   "sha256": "ab56deb66cd58d038133eba6d53d639396aa931e5dd62fb3929892991d8db5f2",
+   "size": 4578531
+  },
+  {
+   "filename": "img0006.jpg",
+   "drive_id": "1se7SplXPUUrKlCPbFtANBoBnVFauhIPI",
+   "sha256": "d17dc3d38df63ce3726653662da40d9d1b530f5982972ab87fcf9bf0a99356b8",
+   "size": 4566883
+  },
+  {
+   "filename": "img0007.jpg",
+   "drive_id": "1nXg0fxRTpReGXl2-bsdUx04GcFtkW3t0",
+   "sha256": "a013fabcdadf6bad3115ecd6ed09a91b8408605a019a56c613c6fd2ec2a3cf47",
+   "size": 4555479
+  },
+  {
+   "filename": "img0008.jpg",
+   "drive_id": "1Wq1QiYIW78JJUw-77xAm2RGbq1kBJjCM",
+   "sha256": "f38c3301563c574a31e8fbc18c4d6951f856b8a2decfa479b88ea320cd64d792",
+   "size": 4538804
+  },
+  {
+   "filename": "img0009.jpg",
+   "drive_id": "1sS1qtGbtfuRrMHT4BE1kI1eBsebLsU6R",
+   "sha256": "14ee3be4a3eb80599cb3c3eeb7fbdd8cb3ab9b55c96da3a9ee2f8e944b67029f",
+   "size": 4539460
+  },
+  {
+   "filename": "img0010.jpg",
+   "drive_id": "1fzghFUoG51WFwcpWrYAas0GkN4l1sd9y",
+   "sha256": "89d1f08a609317aebc5c1267a2ffda7e2c0ba383ac90ee94d633f93be095e11a",
+   "size": 4541333
+  },
+  {
+   "filename": "img0011.jpg",
+   "drive_id": "1sTj4n4tXXhYLu4SSVlm3SDtOXF3BbUoV",
+   "sha256": "1e0d5f6aa2f11cbb3d4f558fb3caaa445400ec25d0fb0a429a883a07bbd5a8bf",
+   "size": 4543205
+  },
+  {
+   "filename": "img0012.jpg",
+   "drive_id": "1-YUX_GswfX7kYd_Gup7kDX8S063OjKy7",
+   "sha256": "d3b493001cc6d5fb24981e443533ae68440e1fe98499ab90c0e99113922a933f",
+   "size": 4573416
+  },
+  {
+   "filename": "img0013.jpg",
+   "drive_id": "1qL11lpzNJmO0YFA0zf59lRIWOF7ZYHBv",
+   "sha256": "1f5393a34cc5c96f5c82e0936d6fdf87d8057a6c98576635d75f3997949bdeca",
+   "size": 4592482
+  },
+  {
+   "filename": "img0014.jpg",
+   "drive_id": "1nGhH5YcHLm5ds2a6ULLAqZzun98d9_MR",
+   "sha256": "ed25f82c88ec39c8056e2d85d388ed3684cbff8ccdc3111cf7f6dd6e18d24031",
+   "size": 4595760
+  },
+  {
+   "filename": "img0015.jpg",
+   "drive_id": "1BIA_gBbkP-DoidZZlA7dwLFg3mGgsOWb",
+   "sha256": "5166662162fb78dc1c1b15aeb73c6ab883ab8d09906f7f23e7bf32075cbdd476",
+   "size": 4657799
+  },
+  {
+   "filename": "img0016.jpg",
+   "drive_id": "1mPBuzAulzZY9tKfEEp54NNmxtmC48eK9",
+   "sha256": "3b69fd4647bced2098ca26348a6039ff363cc098bc0aa434f5da367f38fe4a69",
+   "size": 4667199
+  },
+  {
+   "filename": "img0017.jpg",
+   "drive_id": "1-vYUGdfI8454YLKNd1GgZsZKcnZOhl-B",
+   "sha256": "b097cb59ca764d23648a64300bd0d624140fc502c5f37b785d1e07fa90c9742f",
+   "size": 4713137
+  },
+  {
+   "filename": "img0018.jpg",
+   "drive_id": "168yE27RlgIw-YCEUJsNJPB-ZBUS6qT-0",
+   "sha256": "3d0d695a47975fb39d76141db3373849b052e1ae7ac2b78a72a040bf0ad4a4e8",
+   "size": 4716597
+  },
+  {
+   "filename": "img0019.jpg",
+   "drive_id": "1rZqZvxdr09Or8UGqUw4-9R8NYopNnheU",
+   "sha256": "75343d8e2abe8709d679a8254dfc2db77b87d91c91df9935d2d5dab56e9beac7",
+   "size": 4756711
+  },
+  {
+   "filename": "img0020.jpg",
+   "drive_id": "1B5yh33sBFX9k5qarqPTrKCNemoqxH3gW",
+   "sha256": "b23985e8d3b0801e71fd260f5a092092ef8304a873abc33b088367efa040d40a",
+   "size": 4761117
+  },
+  {
+   "filename": "img0021.jpg",
+   "drive_id": "1dGd97aonDQCL59cLIH2S6M2qNp0I1l1u",
+   "sha256": "8244a7ac0731f4a377c3b34d98d63b7784f18d3911c03126714b91b158e7f88a",
+   "size": 4798976
+  },
+  {
+   "filename": "img0022.jpg",
+   "drive_id": "1ZoyQAZUPbfz5qYmWe-TFWluhWGmZCnFO",
+   "sha256": "52d0364d5c3779f546895aebca77bd6838957f91e1a42196702f49f0f812fe28",
+   "size": 4781822
+  },
+  {
+   "filename": "img0023.jpg",
+   "drive_id": "1-VxatoIuZl62uGiJ0xL_mUrSxzSPMiam",
+   "sha256": "de009ca5c47f2476a5ba9006d9ea9a9f9026b71728d1a7a690e0ae47ce525000",
+   "size": 4827705
+  },
+  {
+   "filename": "img0024.jpg",
+   "drive_id": "1fionogd_Vt4knDxXbwOksnKTOOwVofmH",
+   "sha256": "5f0ca1e532d88e80a7ee67c2af1aa3a8a7275c00da97fbe847e58df20049e078",
+   "size": 4827389
+  },
+  {
+   "filename": "img0025.jpg",
+   "drive_id": "1gknaAafD3nYuFe8QZeRrsSln7tyr5U4p",
+   "sha256": "ff2c69797194b9af9928221c8fc0648ab654dc34c45b5241e82034a44e98cb11",
+   "size": 4802660
+  },
+  {
+   "filename": "img0026.jpg",
+   "drive_id": "1lVFdDkkQOY_KObvOZ3cBw3l9yn4yRtux",
+   "sha256": "e1339802e6934310dc156988b6bb481cec5be1443c77231685c9470fbac20f6e",
+   "size": 4816396
+  },
+  {
+   "filename": "img0027.jpg",
+   "drive_id": "1KtlEZ94UMqlK7KC76SoUx6m_h7_Pd_SM",
+   "sha256": "84e1c89994276a3add852707e38f41e93754323fae0ae47f03affbf7cb00d2b5",
+   "size": 4802777
+  },
+  {
+   "filename": "img0028.jpg",
+   "drive_id": "1nEKdLsqM4eecy6bhB6Ipfgtw7jwSkT-m",
+   "sha256": "8fffa20eeda3403c70961338869b67cb42b7675e356ab6d7da0c824d8b24e8c4",
+   "size": 4766415
+  },
+  {
+   "filename": "img0029.jpg",
+   "drive_id": "1b6V8gaM7L2jluX4il1FvL_pQZjinRc6I",
+   "sha256": "a3236e11ed1db40e39f5c8a6bb1f9e8f759d09d54f7dd61a5a766ec2a493fdad",
+   "size": 4742341
+  }
+ ]
+}

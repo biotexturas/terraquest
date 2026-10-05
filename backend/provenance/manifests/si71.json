@@ -1,0 +1,45 @@
+{
+ "section": "si71",
+ "label": "sin-info / 7-1",
+ "count": 6,
+ "root": "9a855ec00058c2ed0a2303630260235a72965853b734dc683218108d80d816e9",
+ "root_definition": "sha256 over one line per frame: <filename> space <sha256> space <size>, LF-terminated, manifest order",
+ "frames": [
+  {
+   "filename": "test00000.jpg",
+   "drive_id": "1es2rmoZRTh3DUugX4npWQrss04Jii-cj",
+   "sha256": "44d40d8c7660af6c7ec3e25e3f61b9e9685df459bbaed5b0467560514012033b",
+   "size": 4046419
+  },
+  {
+   "filename": "test00001.jpg",
+   "drive_id": "1wxXTRsyC6N6jTo1OkT4-eXjiQXAnRy6T",
+   "sha256": "28e9b0a37dbbb64347e79c8f9635cc25737526bbb8c24f80c87137281610405b",
+   "size": 4043685
+  },
+  {
+   "filename": "test00002.jpg",
+   "drive_id": "1sr15SHAPQlVpw4X_iUyyfwRg4ZafcCg9",
+   "sha256": "a50245915ae80fb8690a276483a1b5b8683dd081390137b553a3115301baa2c0",
+   "size": 4043725
+  },
+  {
+   "filename": "test00003.jpg",
+   "drive_id": "1KQ9g-77_KbxGcSFlG2n2wDh0EsQnwdN6",
+   "sha256": "edf8e4061fe384dfe8d2ba19a72ea777e5abfb0a8e7079cc861dc3d9747bdf74",
+   "size": 4044023
+  },
+  {
+   "filename": "test00004.jpg",
+   "drive_id": "1Il92MxJFJpr94uLBqhLI8Rv-sZ9zMLkQ",
+   "sha256": "f2c65facf1c75e68fdcafe26722455670cc39b1e3b46d74cda4c5b5786615140",
+   "size": 4043620
+  },
+  {
+   "filename": "test00005.jpg",
+   "drive_id": "1GykB2-o4-x81Hj_KPB1xc29AEDJR_o3x",
+   "sha256": "599878fab75b140708867ab3ccfe00e33989402bdd740a87c4a0099baaebbd74",
+   "size": 4043910
+  }
+ ]
+}

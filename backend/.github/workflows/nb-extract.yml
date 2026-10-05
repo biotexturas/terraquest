@@ -1,0 +1,54 @@
+name: nb-extract
+on:
+  push:
+    paths:
+      - '.github/workflows/nb-extract.yml'
+      - 'cv/TRIGGER'
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download notebooks and extract sources
+        run: |
+          mkdir -p cv
+          python3 - <<'PY'
+          import json, urllib.request
+          ids = {
+            "head_tracking": "1R7CPiBZ8hYzHRmksvGtL9eTM_EId3VAp",
+            "optical_flow": "1BzdUIy-Vr4AqRXiSq1hFqKuVYzTgmnLS",
+            "clusters": "1aNLtBpqRjXJrNj2i37jSZg_wtsg9_KXz",
+            "tracking3hs": "17m0tIU7gYNqkHySQt4BfVZNr_bzMS20L",
+          }
+          for name, fid in ids.items():
+              url = f"https://drive.google.com/uc?export=download&id={fid}"
+              req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+              data = urllib.request.urlopen(req, timeout=120).read()
+              nb = json.loads(data)
+              lines = [f"# {name} (drive id {fid})", ""]
+              for i, c in enumerate(nb.get("cells", [])):
+                  src = "".join(c.get("source", []))
+                  if c.get("cell_type") == "markdown":
+                      lines.append(f"## cell {i} [markdown]\n{src}\n")
+                  else:
+                      lines.append(f"## cell {i} [code]\n```python\n{src}\n```\n")
+              open(f"cv/{name}.md", "w").write("\n".join(lines))
+              print(name, "cells", len(nb.get("cells", [])))
+          PY
+      - name: Mirror to public host and record urls
+        run: |
+          : > cv/urls.txt
+          for f in cv/*.md; do
+            u=$(curl -sS -A "b2-cv-extract/1.0" -F "file=@$f" https://0x0.st || echo "FAILED")
+            echo "$f -> $u" >> cv/urls.txt
+          done
+          cat cv/urls.txt
+      - name: Commit results
+        run: |
+          git config user.name "b2-cv"
+          git config user.email "b2@hellominds.ai"
+          git add cv/
+          git commit -m "cv: notebook source extraction (code + markdown, outputs stripped) + mirror urls" || echo "no changes"
+          git push

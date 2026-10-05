@@ -1,0 +1,81 @@
+{
+ "section": "c2",
+ "label": "collection 2 \u00b7 video2 \u00b7 pictures/ \u00b7 image0024 \u2192 image0035",
+ "count": 12,
+ "root": "f753f6ae7d6d9624e64b97ebe8d3ca4a06f13a03b177156c8434860f2980ad9f",
+ "root_definition": "sha256 over one line per frame: <filename> space <sha256> space <size>, LF-terminated, manifest order",
+ "frames": [
+  {
+   "filename": "image0024.jpg",
+   "drive_id": "1cUsmYSL0y9zt4JTMaiPpL5qJBQwlcYXQ",
+   "sha256": "8b4e3e530f4157106c197c5b3d44389c2ab98d2184ebef508dad102e908c03b8",
+   "size": 4260776
+  },
+  {
+   "filename": "image0025.jpg",
+   "drive_id": "1quySrAt-9Kya45jAU_kx7F_HNZhIAOok",
+   "sha256": "ea68e4642e0bb7e8f6dacb316dd661d80c1051538f708ffe3047576102d026fb",
+   "size": 4274008
+  },
+  {
+   "filename": "image0026.jpg",
+   "drive_id": "1h2r2KKRp_dL6HCDx5PQbQIoqEjVl8ZcL",
+   "sha256": "51782969c82e7b131237648748fbcf16e5b025eb92ffac7fffe250261e806afc",
+   "size": 4285834
+  },
+  {
+   "filename": "image0027.jpg",
+   "drive_id": "1il9IsMaOdv9bWcrwZr9JjRahCktSqY7C",
+   "sha256": "6cadacb05ec701303afe1e31bcc43d698ba4356cf6237a606f97daa81e6b2aa8",
+   "size": 4296487
+  },
+  {
+   "filename": "image0028.jpg",
+   "drive_id": "12HW7L72_FvgBZbP9BrOa90rdX_adk8e6",
+   "sha256": "6fc0b7012a3974e2cac13c52c0ff6927fd809e340dec18b71e6d2cbb52343aa7",
+   "size": 4305119
+  },
+  {
+   "filename": "image0029.jpg",
+   "drive_id": "1907RWtPwvL3gLzA9dU1I6k6w5QqRuM4R",
+   "sha256": "e7388d16219a3a317604cb18ee79d950835ce1cde873ba67075acda9d6d8a2e0",
+   "size": 4316263
+  },
+  {
+   "filename": "image0030.jpg",
+   "drive_id": "1lbudnXqWjmkHvtqnzEk5K5rSAfqUxb9p",
+   "sha256": "0806869e39c26e06333edea36940f822c35e82e2dd3f79c100424e48fcffbf36",
+   "size": 4318825
+  },
+  {
+   "filename": "image0031.jpg",
+   "drive_id": "1beCaQbi7C-HfE6z9NmM81iXmQo83Ovii",
+   "sha256": "7b5490c87555cc35c52890d9252a8253c5c6014474c3ceefc30f04f43ea66662",
+   "size": 4322950
+  },
+  {
+   "filename": "image0032.jpg",
+   "drive_id": "1WJ-A-keKc6aPayy7H2QGNuiHga-fJaS-",
+   "sha256": "2a12df047c0a2a54e31142f6c0a9f0802ade1cbe859d5fe0ca295d6fb4039817",
+   "size": 4320049
+  },
+  {
+   "filename": "image0033.jpg",
+   "drive_id": "1Glbzoz_wTpKKTx6wvlCYCVIVNIfaLWco",
+   "sha256": "778987d7381be711646560f768f293c446d5cc96553b42ae61ec65a7ed26ad37",
+   "size": 4323049
+  },
+  {
+   "filename": "image0034.jpg",
+   "drive_id": "1yKZIi5v4bCDf0sgvpKfSnLJIlmhAyroH",
+   "sha256": "bc8e720740c76012b4c40040c1f9c14df01dc784353ae3988cf0322737699835",
+   "size": 4326584
+  },
+  {
+   "filename": "image0035.jpg",
+   "drive_id": "1jZ8F4DLVqmwCkAwFGmsJA6ozLpVBYBJz",
+   "sha256": "5934a968157c733acd4ec058b94c4e7c8648f70f300a8cf55d606f2d36507552",
+   "size": 4318896
+  }
+ ]
+}

@@ -1,0 +1,291 @@
+{
+ "section": "t122",
+ "label": "12-2",
+ "count": 47,
+ "root": "56174dc9af68ba91fc943ace10becd06e9c9c1ffeb59a59bd3ddf615c5298775",
+ "root_definition": "sha256 over one line per frame: <filename> space <sha256> space <size>, LF-terminated, manifest order",
+ "frames": [
+  {
+   "filename": "image0000.jpg",
+   "drive_id": "1Lu0wCusr6woMDtUjtwCcmHKEfzdWdLFK",
+   "sha256": "e14b446f624c251122fec7e6920999f335c00cd2726bdc11e41bb01d1eef6c2a",
+   "size": 4060189
+  },
+  {
+   "filename": "image0001.jpg",
+   "drive_id": "1trOd_W8rUC5vz2jRQ653NfRfpB8W0SEb",
+   "sha256": "3eb3530d2c2383addf1abaa3b3fb0018b1e20853f98bb1c9e72a7149c13af724",
+   "size": 4306805
+  },
+  {
+   "filename": "image0002.jpg",
+   "drive_id": "1MTBiSbC-IM5mWZMKmYf2EJKmPOh73hfA",
+   "sha256": "7245fa18cfcfa3d52f3cb2effd0f63f2da9bc01c266e11561dc05cda75b94657",
+   "size": 4318189
+  },
+  {
+   "filename": "image0003.jpg",
+   "drive_id": "1nuoRMcL9o21QJF77VNZbmoYQ02qQq9sb",
+   "sha256": "6d918f85c5b6b56746c41070f056fb0a7d78f2d89dde47ec910004cc3b1104b0",
+   "size": 4327544
+  },
+  {
+   "filename": "image0004.jpg",
+   "drive_id": "1omIn2mWXuEheXykeNTCAtW5_HodbLoH8",
+   "sha256": "333d35043a94d0a44455bb317d909d309179152bc7f7fb29bdbfbfb3c78855ab",
+   "size": 4341095
+  },
+  {
+   "filename": "image0005.jpg",
+   "drive_id": "1M6VtvFCMF1dqkbilXhb6izRy1OcIB6Q0",
+   "sha256": "75e89f74d4811477b7574c60260ab75565ae1e04cf8aeca3de5972c6c2fe346c",
+   "size": 4361561
+  },
+  {
+   "filename": "image0006.jpg",
+   "drive_id": "1HavoWSX2Kdov7Ii39alYcWLRaz-scBIR",
+   "sha256": "748d05af32cd699a04f57d80f52800b8d6c51c40aed86df8757730fef8a5dbd9",
+   "size": 4368086
+  },
+  {
+   "filename": "image0007.jpg",
+   "drive_id": "1uEOs1Waha-IBMgYBfW4mDc6M4GYLeV75",
+   "sha256": "dcc76bc6e986ec981776008cb1777c86f478677655dd926bd6c9393bcf1d8919",
+   "size": 4384230
+  },
+  {
+   "filename": "image0008.jpg",
+   "drive_id": "1x09OvyoNhzAtH8fZMQokd9AVRAC4E1vi",
+   "sha256": "965ed964b3b25b7881ecfc118b85762129f4005571b2ef95175ea1d63a0fce97",
+   "size": 4388729
+  },
+  {
+   "filename": "image0009.jpg",
+   "drive_id": "1qTVLmVusIxEwQrw4EyHghLCSTy24SqCR",
+   "sha256": "66e4c65e3023b5b722a8cf0aa654173484240a7bcefcdc7dfcdb698f9be3fe48",
+   "size": 4395511
+  },
+  {
+   "filename": "image0010.jpg",
+   "drive_id": "1Ihuzi0-9pArlr5HhDgqvK_5ud8hCHRCg",
+   "sha256": "1e9e740ec7e34ad3072c3f1f46a42694e9d155cf5d6d28ac9d8319c2f2805c38",
+   "size": 4396384
+  },
+  {
+   "filename": "image0011.jpg",
+   "drive_id": "1rEvEdsbnIa0fqX4mo-1FtB0kPAzSWIf6",
+   "sha256": "570a9542734cab2979f34b616664f3000734afe4f3ceed1b3fa841b8f699a82c",
+   "size": 4409778
+  },
+  {
+   "filename": "image0012.jpg",
+   "drive_id": "1T-3Jd_VtuadQFny3id5L-nhBr2mO-xLF",
+   "sha256": "ba35cadb8c65d224280b2f927602fcd3232ece3a040be4de6fce33cd729517d4",
+   "size": 4405535
+  },
+  {
+   "filename": "image0013.jpg",
+   "drive_id": "1-_wwQANC9sNqFhw-Q2LyrYzENXkjtP8F",
+   "sha256": "765f88b2fb663d369ad823266d7cd5d900eac436d43aa84d084cdf753cfe26fb",
+   "size": 4399962
+  },
+  {
+   "filename": "image0014.jpg",
+   "drive_id": "1jNGkVOsjwI7ZZ27iAJtGrfDDzKQhRc5R",
+   "sha256": "8282d765c050a67103cbb8555b407c5f4da0cdbeb831b227f1af7cdc26a4d228",
+   "size": 4393927
+  },
+  {
+   "filename": "image0015.jpg",
+   "drive_id": "1A-VhrdReqH8BAHeji4ly8168E8uvlUuE",
+   "sha256": "b8958ed628d6029548f53a702fc4df6cac7c54a7eff31433f8281d624259bb62",
+   "size": 4376833
+  },
+  {
+   "filename": "image0016.jpg",
+   "drive_id": "1Rtcw2YbMGIxZWpC2rqpY3cQqD9jVl3Tn",
+   "sha256": "6e3393b433a8822da112ec8bd2b1e8fef536657e5314e5dcd0a8f4dee89056f1",
+   "size": 4369255
+  },
+  {
+   "filename": "image0017.jpg",
+   "drive_id": "1ClaLrwjb390NaWtNYO-1WCYrMiLpYNVt",
+   "sha256": "7ac0ce9053bd1b6aa1d68958845575df338187c4c0fbab544bab01ed41a59fe0",
+   "size": 4364508
+  },
+  {
+   "filename": "image0018.jpg",
+   "drive_id": "13rvKQOj10b9KUK8KpOuza1e_osLpSL4I",
+   "sha256": "b3552c28d1e6465fa5471caacff544de9ebf097153d1705fcad6b2b693f8bbba",
+   "size": 4358201
+  },
+  {
+   "filename": "image0019.jpg",
+   "drive_id": "1O9lokGSRde5qqyZfKS21oDrMMYLNPYh_",
+   "sha256": "e0c66864ed746bfd3c3d01957bc7d211b42953be9ffa2223796f49b8976fb531",
+   "size": 4357762
+  },
+  {
+   "filename": "image0020.jpg",
+   "drive_id": "1oxD-_4I1JjrDSr_nCx--XgTkw94lyP9h",
+   "sha256": "e82c0f6dc9a0734f93ea78ff144ec5d317c71daa4adca10b3473ea2de2eb860e",
+   "size": 4355746
+  },
+  {
+   "filename": "image0021.jpg",
+   "drive_id": "1Jrk2B4fN1HpFaLVBNA_y9fJjYopKCmw7",
+   "sha256": "d1cf8668ea9d55d4d8955015691e96c2960e6e5387dfbfce838418921b48b6d9",
+   "size": 4353720
+  },
+  {
+   "filename": "image0022.jpg",
+   "drive_id": "19u7srH0dkh8LtE2k_H1-p6w23CSwl-Tc",
+   "sha256": "f46d097bba4508db17b63b27d1314ac7943a435d9446306ed7d8dc20002223f9",
+   "size": 4351353
+  },
+  {
+   "filename": "image0023.jpg",
+   "drive_id": "1uDIeS-9ZDEktV5VIbI_CMFSrZHdRH_xv",
+   "sha256": "141bd44d373ac7a97722da31894a77368ac91c1b9301e1ebefc120184692bdb1",
+   "size": 4350569
+  },
+  {
+   "filename": "image0024.jpg",
+   "drive_id": "1kUI68GUekzm_pZzbjrywIT2t2QZMwxLm",
+   "sha256": "a56788af83092f82a9abaac6ef94207651c705aedcbe18dc7f2185efba9e31c7",
+   "size": 4349658
+  },
+  {
+   "filename": "image0025.jpg",
+   "drive_id": "1OmchmiZvPtkOOPKLWfVjx2HbMMKKDTAO",
+   "sha256": "4311008f668efda3bedc17cf720764d3bbcb854b8d0b3ce6100a6e5e0c7f9e85",
+   "size": 4353006
+  },
+  {
+   "filename": "image0026.jpg",
+   "drive_id": "1EoryqZ9UbFDo_DfcHv4pVq_wZVOZ9H9t",
+   "sha256": "f1a80646b9c60fc308554891766ebf34665f92211fa09d6321b4cbd95a872bd8",
+   "size": 4352078
+  },
+  {
+   "filename": "image0027.jpg",
+   "drive_id": "1bgNCKvooa5Bv_wocVDLQmbQFi7a_xAlw",
+   "sha256": "93d87f9ee1ddac9586119b681972c199393a9cf699be64edc32fba4cacfaa31c",
+   "size": 4352048
+  },
+  {
+   "filename": "image0028.jpg",
+   "drive_id": "1t6AQpFskTjbQqpxIjPI7hOWDruijp5Y4",
+   "sha256": "f4a6e1c2f1d02a65d347972bd8732a16f24b91dab360c90ddf875312f64f82bb",
+   "size": 4347621
+  },
+  {
+   "filename": "image0029.jpg",
+   "drive_id": "1pfY2nLeEy6XIMPyS5R-yrGUU0RrC07Td",
+   "sha256": "cfbe9d88e323cc576f9361f3ef978067d110e41f0de4819849c34c207a8fdf0d",
+   "size": 4399310
+  },
+  {
+   "filename": "image0030.jpg",
+   "drive_id": "1PFfq7JZp3tCZMmkb6hEVxGNzBj7puNkq",
+   "sha256": "f09ec81a3f023cf4d423bc210a53b506674f6400567fc03fd58f0ab89d50187b",
+   "size": 4404735
+  },
+  {
+   "filename": "image0031.jpg",
+   "drive_id": "15cvfE6xVrjS5TVbyop3-QxkVfu4FXXrh",
+   "sha256": "b119f7a07f0d08c8e747276f83ed6d1537b525c0204ee99bbf15575a1acd53a5",
+   "size": 4411790
+  },
+  {
+   "filename": "image0032.jpg",
+   "drive_id": "1KibgTCTlHSGscNeUkLeOCSm8dRhFnh-o",
+   "sha256": "d7be47f063828ff5e569b36dbe66c89b5d4cf92242794d503765a8f82579969d",
+   "size": 4415087
+  },
+  {
+   "filename": "image0033.jpg",
+   "drive_id": "1Zp399qVNkKlLYu_6QMHr0RGQOOfzRrBq",
+   "sha256": "7f219705d060df0a0abd6913a42f7e43ed2de167db3823c2c02300b6ad15f7f4",
+   "size": 4416361
+  },
+  {
+   "filename": "image0034.jpg",
+   "drive_id": "10dscTPWr79MtN241VJRg7ahkJPvA49az",
+   "sha256": "c4aa1fb7220fbfe48a1a48a4947893ad35e97bd621044679397a06c5a2eb0256",
+   "size": 4430934
+  },
+  {
+   "filename": "image0035.jpg",
+   "drive_id": "12yIFR6oFaX_61XjJcsjREgEH2CJEukPs",
+   "sha256": "ffa063b2cf333c3c2cfbbe0fdc77996fd6c79463b85b2091202be43ceaa0d82a",
+   "size": 4432590
+  },
+  {
+   "filename": "image0036.jpg",
+   "drive_id": "1j5-kpX1YXWXtogzxKHptdb1nOvPNp1Qf",
+   "sha256": "772b54a3cc0dfe715fc64ecf59fbf2d3073be260e4e7a090390be055bdf709cc",
+   "size": 4435724
+  },
+  {
+   "filename": "image0037.jpg",
+   "drive_id": "1Yg3fRdBSN5ldCug5Xe5qGJ4ANzzms-z4",
+   "sha256": "2d1687aa5916c0325a4672b5aa2cfd9718b8b6d74ba5f48095f1115274174cf3",
+   "size": 4442567
+  },
+  {
+   "filename": "image0038.jpg",
+   "drive_id": "1MiU1u-9VGkn7AuyAi9wcugsh8V1ycMc0",
+   "sha256": "8ac4e6a7bb4bb01bdab807a34cbd67a98124f930937443eb979aca4c50d6cbeb",
+   "size": 4441515
+  },
+  {
+   "filename": "image0039.jpg",
+   "drive_id": "10B0K6_ZiWCr1u6yNsLfYIB1bTFbGgcaL",
+   "sha256": "a69cb58d689561c0bbc395cf34634b495b6dbe0a0b63a5d785004170c9549050",
+   "size": 4444942
+  },
+  {
+   "filename": "image0040.jpg",
+   "drive_id": "1eiUGdu3Kg7iZX16UpJ3gZFRqbVUNu_PA",
+   "sha256": "add1e3d664fd34ca7450e26efe5e13f4aaa52c630437aeabe0370929bb108e4e",
+   "size": 4445360
+  },
+  {
+   "filename": "image0041.jpg",
+   "drive_id": "1tZ1tnFBeem60FFLMIlCYvmTGP1jGjYME",
+   "sha256": "003d593bb6a92ab06e7f22da1463684f19a07fb60c77e8bfb0368076b2e19b9c",
+   "size": 4445508
+  },
+  {
+   "filename": "image0042.jpg",
+   "drive_id": "1OO41E1QmKxDiCpLXfrpN2Q5ahjex0a_r",
+   "sha256": "2be45303971c2406bd8c804dd4befb1f1fe0a0163e36bc34e76862e4a6dd3648",
+   "size": 4445678
+  },
+  {
+   "filename": "image0043.jpg",
+   "drive_id": "1n9VxiNelLG80emPn4RIN9de8M7fmQ8kH",
+   "sha256": "a077723e94b89a26c28bfaacdebdd64c2b11802e96b3e53752bd3ff8d620a18b",
+   "size": 4447248
+  },
+  {
+   "filename": "image0044.jpg",
+   "drive_id": "1wz7NWsLhcQF7Ps9Yy-BE0aLh2OVqDb8S",
+   "sha256": "7ca923beb5e234c1bc17a0c9e10d8c330335569d9103b1a207374107bf716cd3",
+   "size": 4447888
+  },
+  {
+   "filename": "image0045.jpg",
+   "drive_id": "1XvJ6ZUima51mIcnaNI5EwqsAbUaQl8vj",
+   "sha256": "22c600f6c095ed94682c50876c379b323c0ccd0b53269cf0b1e520d0b631dd66",
+   "size": 4448232
+  },
+  {
+   "filename": "image0046.jpg",
+   "drive_id": "1GErBjlvU6YZLlTjFflnt-ehIuoba44UY",
+   "sha256": "2ea3b061f821db3cce68031c2748ec9082eabddb4f69b1735320b93916d3d8e9",
+   "size": 4449824
+  }
+ ]
+}

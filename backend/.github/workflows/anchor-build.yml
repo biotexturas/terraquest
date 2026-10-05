@@ -1,0 +1,131 @@
+name: anchor-build
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      # Cache keyed on job name + Cargo.toml contents. Cargo.lock does not
+      # exist at job start (it is generated during the run), so it must not
+      # participate in the key.
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/
+            ~/.cargo/git/
+            target/
+          key: cargo-${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/Cargo.toml') }}
+
+      # Pinned to Agave v4.2.2 - the last 4.2-line toolchain with a proven
+      # green T1-T6 run: run 29 (09-28 07:32Z) ran on the v4.2 line (stable
+      # commit e29e5d9) - the .so loaded in LiteSVM 0.7.1, all six tests
+      # passed, and its cargo parsed edition2024 manifests (cpufeatures
+      # 0.3.1, base64ct 1.8.3). Stable drifted to the v4.3 line overnight
+      # (commit 44b42d4, 09-28 17:46) whose SBF output LiteSVM 0.7.1's
+      # solana 2.x loader rejects (run 30: T1-T6 all InvalidAccountData).
+      # v2.1.13 was the mirror failure: its cargo 1.79 cannot parse
+      # edition2024 crates, so anchor build died at dependency resolution
+      # (run 41, 46s in, no .so produced). Do not bump this pin without a
+      # green T1-T6 run on the new toolchain.
+      - name: Install Solana CLI (Agave v4.2.2 - pinned)
+        run: |
+          sh -c "$(curl -sSfL https://release.anza.xyz/v4.2.2/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+
+      - name: Install Anchor CLI 0.31.1
+        run: cargo install --git https://github.com/coral-xyz/anchor --tag v0.31.1 anchor-cli --locked --force
+
+      # Program ID must be stable across runs (devnet deploy + b1 handoff).
+      # Prefer order: keys/ in the repo > cached target/deploy > fresh gen.
+      # anchor keys sync then aligns lib.rs/Anchor.toml, and on the first run
+      # the pinned keypair + synced sources are committed back on ci [skip ci]
+      # so the pin push does not retrigger.
+      - name: Program keypair (pinned via keys/) + sync declare_id
+        run: |
+          set -e
+          mkdir -p target/deploy keys
+          if [ -f keys/terraquest_mint-keypair.json ]; then
+            cp keys/terraquest_mint-keypair.json target/deploy/terraquest_mint-keypair.json
+          elif [ ! -f target/deploy/terraquest_mint-keypair.json ]; then
+            solana-keygen new --no-bip39-passphrase --silent --outfile target/deploy/terraquest_mint-keypair.json
+          fi
+          anchor keys sync
+          echo "Program ID: $(solana-keygen pubkey target/deploy/terraquest_mint-keypair.json)"
+          if [ ! -f keys/terraquest_mint-keypair.json ]; then
+            cp target/deploy/terraquest_mint-keypair.json keys/terraquest_mint-keypair.json
+            git config user.name "terraquest-ci"
+            git config user.email "ci@terraquest.local"
+            git add keys/terraquest_mint-keypair.json programs/terraquest-mint/src/lib.rs Anchor.toml
+            git commit -m "chore: pin program keypair + declare_id [skip ci]" || true
+            git push || true
+          fi
+
+      - name: anchor build
+        run: |
+          set +e
+          anchor build 2>&1 | tee build.log
+          st=${PIPESTATUS[0]}
+          if [ "$st" -ne 0 ]; then
+            n=0
+            # Mid-line match: CARGO_TERM_COLOR=always prefixes error lines
+            # with ANSI escapes, so ^error never matched.
+            while IFS= read -r line; do echo "::error::$line"; n=$((n+1)); done < <(grep -aE 'error(\[E[0-9]+\]|:)' build.log | head -40)
+            if [ "$n" -eq 0 ]; then
+              echo "::error::no error lines matched; log tail follows"
+              tail -20 build.log | while IFS= read -r line; do echo "::error::$line"; done
+            fi
+            exit $st
+          fi
+
+      - name: Upload program artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraquest-mint-build
+          path: |
+            target/deploy/*.so
+            target/deploy/*-keypair.json
+            target/idl/*.json
+            target/types/*.ts
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+
+      # T1-T6 execute here (not in cargo-test): they load target/deploy/*.so
+      # plus the Metaplex token-metadata program the mint path CPIs into. Dump
+      # one per runner (target/ is cached); devnet matches the devnet-only lane.
+      - name: Dump Metaplex metadata program (T1-T6 external CPI target)
+        run: |
+          if [ ! -f target/mpl_token_metadata.so ]; then
+            solana program dump -u d metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s target/mpl_token_metadata.so
+          fi
+
+      - name: cargo test (T1-T6 named-attack suite on LiteSVM)
+        run: |
+          set +e
+          cargo test -p terraquest-mint 2>&1 | tee test.log
+          st=${PIPESTATUS[0]}
+          if [ "$st" -ne 0 ]; then
+            echo "=== surfacing first errors as annotations ==="
+            n=0
+            # Mid-line match so ANSI-colored rustc/cargo errors and test
+            # panics are captured (anchored ^error missed escape-prefixed lines).
+            while IFS= read -r line; do echo "::error::$line"; n=$((n+1)); done < <(grep -aE 'error(\[E[0-9]+\]|:)|panicked at|assertion' test.log | head -50)
+            if [ "$n" -eq 0 ]; then
+              echo "::error::no error lines matched; log tail follows"
+              tail -60 test.log | while IFS= read -r line; do echo "::error::$line"; done
+            fi
+            exit $st
+          fi

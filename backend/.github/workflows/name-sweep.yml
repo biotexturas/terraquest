@@ -1,0 +1,21 @@
+name: name-sweep
+
+on:
+  push:
+    paths:
+      - '.github/workflows/name-sweep.yml'
+  workflow_dispatch:
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Grep student name spellings
+        run: |
+          echo "==== Z-SPELLING (must be zero) ===="
+          grep -rni "suzana" . --exclude-dir=.git || echo "Z_SPELLING_NO_MATCHES"
+          echo "==== S-SPELLING (correct) ===="
+          grep -rni "susana" . --exclude-dir=.git || echo "S_SPELLING_NO_MATCHES"

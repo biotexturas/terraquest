@@ -1,0 +1,55 @@
+EVIDENCE frame_order=['image0009.jpg', 'image0010.jpg', 'image0011.jpg', 'image0012.jpg', 'image0013.jpg', 'image0014.jpg', 'image0015.jpg', 'image0016.jpg', 'image0017.jpg', 'image0018.jpg', 'image0019.jpg', 'image0020.jpg']
+EVIDENCE frame=image0009.jpg bytes=4259183 dims=3280x2464
+EVIDENCE frame=image0010.jpg bytes=4267094 dims=3280x2464
+EVIDENCE frame=image0011.jpg bytes=4288404 dims=3280x2464
+EVIDENCE frame=image0012.jpg bytes=4294646 dims=3280x2464
+EVIDENCE frame=image0013.jpg bytes=4318756 dims=3280x2464
+EVIDENCE frame=image0014.jpg bytes=4338275 dims=3280x2464
+EVIDENCE frame=image0015.jpg bytes=4343791 dims=3280x2464
+EVIDENCE frame=image0016.jpg bytes=4353377 dims=3280x2464
+EVIDENCE frame=image0017.jpg bytes=4354314 dims=3280x2464
+EVIDENCE frame=image0018.jpg bytes=4361970 dims=3280x2464
+EVIDENCE frame=image0019.jpg bytes=4354725 dims=3280x2464
+EVIDENCE frame=image0020.jpg bytes=4352798 dims=3280x2464
+EVIDENCE npz_bytes=456
+EVIDENCE npz_keys=['arr_0']
+EVIDENCE npz_key=arr_0 shape=(12, 2) dtype=float64 min=158.3342742919922 max=938.5
+EVIDENCE tld_range x=[262.000000, 938.500000] y=[158.334274, 887.000000]
+EVIDENCE coordinate_space=40pct velocity_px_scale=1.0
+EVIDENCE processing_space=40pct dims=(1312, 986) count=12
+EVIDENCE lk_pair=0->1 grid_points=465 fb_kept=167 mean_disp_px=2.293409
+EVIDENCE lk_pair=1->2 grid_points=650 fb_kept=163 mean_disp_px=0.871458
+EVIDENCE lk_pair=2->3 grid_points=645 fb_kept=123 mean_disp_px=1.142603
+EVIDENCE lk_pair=3->4 grid_points=705 fb_kept=160 mean_disp_px=1.518169
+EVIDENCE lk_pair=4->5 grid_points=705 fb_kept=176 mean_disp_px=1.360365
+EVIDENCE lk_pair=5->6 grid_points=870 fb_kept=256 mean_disp_px=0.880256
+EVIDENCE lk_pair=6->7 grid_points=1029 fb_kept=358 mean_disp_px=1.418972
+EVIDENCE lk_pair=7->8 grid_points=1055 fb_kept=374 mean_disp_px=2.154039
+EVIDENCE lk_pair=8->9 grid_points=1205 fb_kept=444 mean_disp_px=2.111675
+EVIDENCE lk_pair=9->10 grid_points=1587 fb_kept=341 mean_disp_px=4.765700
+EVIDENCE lk_pair=10->11 grid_points=1546 fb_kept=592 mean_disp_px=1.627912
+EVIDENCE blob frame=1 center=(720.888,191.571) area_px2=7272.0
+EVIDENCE blob frame=2 center=(742.252,262.630) area_px2=7392.5
+EVIDENCE blob frame=3 center=(769.509,327.253) area_px2=7869.0
+EVIDENCE blob frame=4 center=(791.715,394.880) area_px2=7980.5
+EVIDENCE blob frame=5 center=(820.537,464.600) area_px2=7634.5
+EVIDENCE blob frame=6 center=(843.280,532.941) area_px2=7772.0
+EVIDENCE blob frame=7 center=(871.968,602.945) area_px2=7772.0
+EVIDENCE blob frame=8 center=(893.183,670.801) area_px2=8314.0
+EVIDENCE blob frame=9 center=(925.022,739.070) area_px2=8475.5
+EVIDENCE blob frame=10 center=(956.049,808.719) area_px2=8579.5
+EVIDENCE blob frame=11 center=(983.625,876.282) area_px2=9212.0
+EVIDENCE blob_vs_tld frame=1 err_px=26.093
+EVIDENCE blob_vs_tld frame=2 err_px=40.357
+EVIDENCE blob_vs_tld frame=3 err_px=55.542
+EVIDENCE blob_vs_tld frame=4 err_px=73.562
+EVIDENCE blob_vs_tld frame=5 err_px=63.472
+EVIDENCE blob_vs_tld frame=6 err_px=79.999
+EVIDENCE blob_vs_tld frame=7 err_px=53.519
+EVIDENCE blob_vs_tld frame=8 err_px=73.614
+EVIDENCE blob_vs_tld frame=9 err_px=78.109
+EVIDENCE blob_vs_tld frame=10 err_px=80.224
+EVIDENCE blob_vs_tld frame=11 err_px=778.195
+SUMMARY space=40pct blob_err_mean_px=127.517 blob_err_max_px=778.195 formula='v = disp_px * 100000/(2*1400*40)'
+SUMMARY lk_mean=1.6351 lk_std=0.9263 blob_mean=65.5611 hers_tld=74.1 +/- 12.2 um/min
+EVIDENCE results_json=ce_player_video1_results.json bytes=1955

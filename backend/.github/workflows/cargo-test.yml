@@ -1,0 +1,57 @@
+name: cargo-test
+
+on:
+  push:
+    workflow_dispatch:
+
+# Deliberately separate from anchor-build.yml: this job needs no Solana or
+# Anchor toolchain. It resolves dev-dependencies (litesvm / solana-sdk),
+# compiles EVERY test target (incl. tests/t1_t6.rs), and runs only the
+# artifact-free smoke test. The full T1-T6 suite needs target/deploy/*.so and
+# the Metaplex program binary, so it executes in anchor-build where those exist.
+# The cargo-test error-annotation debug loop stays untouched.
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      # Cargo.toml (not the CI-generated Cargo.lock) keys the cache - a
+      # Cargo.lock may not exist at job start, so hashFiles on it was constant
+      # and the cache never refreshed after the first save. Job name keeps the
+      # two workflows' caches independent.
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/
+            ~/.cargo/git/
+            target/
+          key: cargo-${{ runner.os }}-${{ github.job }}-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: cargo test (resolve dev-deps, compile every test target, run artifact-free tests)
+        run: |
+          set +e
+          cargo test -p terraquest-mint --no-run 2>&1 | tee test.log
+          st=${PIPESTATUS[0]}
+          if [ "$st" -eq 0 ]; then
+            cargo test -p terraquest-mint --test version_smoke 2>&1 | tee -a test.log
+            st=${PIPESTATUS[0]}
+          fi
+          if [ "$st" -ne 0 ]; then
+            echo "=== surfacing first errors as annotations ==="
+            n=0
+            # Match mid-line so ANSI-colored cargo/rustc errors still hit
+            # (CARGO_TERM_COLOR=always prefixes lines with escape codes, so
+            # an anchored ^error matched nothing).
+            while IFS= read -r line; do echo "::error::$line"; n=$((n+1)); done < <(grep -aE 'error(\[E[0-9]+\]|:)|panicked at|assertion' test.log | head -40)
+            if [ "$n" -eq 0 ]; then
+              echo "::error::no error lines matched; log tail follows"
+              tail -40 test.log | while IFS= read -r line; do echo "::error::$line"; done
+            fi
+            exit $st
+          fi

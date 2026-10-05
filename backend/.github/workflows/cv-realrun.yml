@@ -1,0 +1,57 @@
+name: cv-realrun
+on:
+  push:
+    paths:
+      - '.github/workflows/cv-realrun.yml'
+      - 'cv/REALRUN'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  realrun:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy opencv-python-headless scikit-image
+
+      - name: Real-footage run
+        run: |
+          cd cv
+          python realrun.py 2>&1 | tee realrun.log
+          cd ..
+
+      - name: Step summary
+        if: always()
+        run: |
+          if [ -f cv/realrun.log ]; then cat cv/realrun.log >> summary.txt; fi
+          if [ -f summary.txt ]; then cat summary.txt; fi
+
+      - name: Upload outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-realrun-output
+          path: |
+            cv/realrun/RESULTS.md
+            cv/realrun/*.npy
+          if-no-files-found: warn
+
+      - name: Commit results
+        run: |
+          git config user.name b2-cv
+          git config user.email b2@hellominds.ai
+          git add cv/realrun/RESULTS.md || true
+          git commit -m "cv: real-footage run RESULTS (v0.2)" || echo no-changes
+          git push

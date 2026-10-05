@@ -1,0 +1,50 @@
+name: fix-ed25519-id
+
+# Self-patch workflow: replaces the hand-typed Ed25519 precompile program id
+# base58 literal (wrong byte length -> WrongSize panic) with the compile-time
+# solana_program constant. Idempotent - exits without committing when the
+# literal is already absent.
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-ed25519.yml
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace hand-typed Ed25519 program id literal with solana_program constant
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re, sys
+          p = "programs/terraquest-mint/tests/t1_t6.rs"
+          s = open(p).read()
+          pat = re.compile(
+              r'"Ed25519SigVerify1*"\s*\.parse\(\)\s*\.expect\("static ed25519 program id"\)',
+              re.S,
+          )
+          s2, n = pat.subn(
+              "anchor_lang::solana_program::ed25519_program::ID", s
+          )
+          print("replacements=%d" % n)
+          if n == 0:
+              if '.expect("static ed25519 program id")' in s:
+                  sys.exit("expected pattern did not match source - manual fix required")
+              print("literal already absent - nothing to do")
+          open(p, "w").write(s2)
+          PY
+          git config user.name "b.2"
+          git config user.email "90b5443e@hellominds.ai"
+          git add programs/terraquest-mint/tests/t1_t6.rs
+          if git diff --cached --quiet; then
+            echo "tree already fixed"
+          else
+            git commit -m "fix(test): Ed25519 precompile program id via solana_program constant, not a hand-typed base58 literal (WrongSize panic at t1_t6.rs:139)"
+            git push
+          fi

@@ -1,0 +1,29 @@
+name: hash-hato
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hash-hato.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-drive-copy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download hatoclusters.avi from Google Drive and verify SHA-256
+        run: |
+          set -euo pipefail
+          echo "Fetching Drive file id=1ChPuiUbSyK8jyzoBIzgZBD3hDKVkB7Ay (folder AncientDatagram, anyone-with-link)"
+          curl -fsSL --retry 3 -o hato.avi "https://drive.usercontent.google.com/download?id=1ChPuiUbSyK8jyzoBIzgZBD3hDKVkB7Ay&export=download&confirm=t"
+          BYTES=$(stat -c%s hato.avi)
+          echo "downloaded bytes: $BYTES (expected 14486308)"
+          echo "first 12 bytes (hex): $(head -c 12 hato.avi | xxd -p)"
+          echo "expected magic: 52494646........41564920  (RIFF....AVI )"
+          ACTUAL=$(sha256sum hato.avi | awk '{print $1}')
+          EXPECTED="59022e0c72476839737e37c29f98a6cb4ff131d106ce1a9fcd7c6ad765e7fd80"
+          echo "actual   sha256: $ACTUAL"
+          echo "expected sha256: $EXPECTED"
+          test "$BYTES" -eq 14486308
+          test "$ACTUAL" = "$EXPECTED"
+          echo "MATCH: Drive copy is byte-identical to the frozen capture_hash bytes"

@@ -1,0 +1,76 @@
+name: ce-report-pdf
+
+on:
+  push:
+    paths:
+      - "cv/realrun/build_ce_report_pdf.py"
+      - ".github/workflows/ce-report-pdf.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pillow fpdf2
+
+      - name: Build report PDF
+        run: python cv/realrun/build_ce_report_pdf.py
+
+      - name: Commit PDF
+        run: |
+          set -eux
+          git config user.name "b2-cv-realrun"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add cv/realrun/CE_PLAYER_VIDEO1_REPORT.pdf || true
+          if git diff --cached --quiet; then
+            echo "no pdf to commit"
+          else
+            git commit -m "cv(realrun): CE_Player video1 report PDF"
+            git pull --rebase origin main
+            git push origin main
+          fi
+
+      - name: Publish one-time download link
+        run: |
+          set -eux
+          PDF=cv/realrun/CE_PLAYER_VIDEO1_REPORT.pdf
+          test -f "$PDF"
+          URL=""
+          LOG=""
+          RESP_A=$(curl -sS -m 45 -A "Mozilla/5.0" -F "file=@$PDF" https://0x0.st || true)
+          LOG="${LOG}0x0.st=>>${RESP_A}<< "
+          URL=$(printf '%s' "$RESP_A" | grep -Eo 'https://0x0\.st/[A-Za-z0-9]+' | head -n 1 || true)
+          if [ -z "$URL" ]; then
+            RESP_B=$(curl -sS -m 45 -F "reqtype=fileupload" -F "time=72h" -F "fileToUpload=@$PDF" https://litterbox.catbox.moe/resources/internals/api.php || true)
+            LOG="${LOG}litterbox=>>${RESP_B}<< "
+            URL=$(printf '%s' "$RESP_B" | grep -Eo 'https://files\.catbox\.moe/[A-Za-z0-9]+\.pdf' | head -n 1 || true)
+          fi
+          if [ -z "$URL" ]; then
+            RESP_C=$(curl -sS -m 45 -F "file=@$PDF" https://tmpfiles.org/api/v1/upload || true)
+            LOG="${LOG}tmpfiles=>>${RESP_C}<< "
+            T=$(printf '%s' "$RESP_C" | grep -Eo 'https://tmpfiles\.org/[0-9]+/[A-Za-z0-9._-]+' | head -n 1 || true)
+            URL=$(printf '%s' "$T" | sed 's#tmpfiles.org/#tmpfiles.org/dl/#' || true)
+          fi
+          echo "URL=$URL"
+          echo "LOG=$LOG"
+          printf 'URL=%s\nRAW=%s\n' "$URL" "$LOG" > cv/realrun/CE_REPORT_PDF_URL.txt
+          git config user.name "b2-cv-realrun"
+          git config user.email "90B5443E-F36B-1410-8467-00039CE7DF11@hellominds.ai"
+          git add cv/realrun/CE_REPORT_PDF_URL.txt
+          if git diff --cached --quiet; then
+            echo "no url change"
+          else
+            git commit -m "cv(realrun): one-time PDF download link"
+            git pull --rebase origin main
+            git push origin main
+          fi

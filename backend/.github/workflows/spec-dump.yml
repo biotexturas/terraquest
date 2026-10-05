@@ -1,0 +1,49 @@
+name: spec-dump
+on:
+  push:
+    paths:
+      - 'press/spec-dump-marker.txt'
+  workflow_dispatch:
+
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dump drawn strings and styling
+        run: |
+          python3 - <<'EOF'
+          import ast
+          files = [
+              'cv/social/render_video1_social.py',
+              'cv/realrun/render_video1_ce_view.py',
+              'cv/realrun/render_video1_viz.py',
+          ]
+          for f in files:
+              src = open(f).read()
+              print('===== FILE ' + f + ' =====')
+              tree = ast.parse(src)
+              print('--- TOPLEVEL CONSTANTS ---')
+              for node in tree.body:
+                  if isinstance(node, ast.Assign):
+                      seg = ast.get_source_segment(src, node)
+                      if seg and len(seg) < 400:
+                          print(seg.replace(chr(10), ' ; '))
+              print('--- DRAW HELPER FUNCTIONS ---')
+              for node in tree.body:
+                  if isinstance(node, ast.FunctionDef) and node.name in (
+                      'draw_header', 'draw_footer', 'draw_clock', 'compose_base',
+                      'put_center', 'put_right', 'metrics_line'):
+                      print('## ' + node.name)
+                      print(ast.get_source_segment(src, node))
+              print('--- STRING LITERALS (verbatim, with line) ---')
+              seen = set()
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Constant) and isinstance(node.value, str) and len(node.value) >= 3:
+                      key = (node.value)
+                      if key in seen:
+                          continue
+                      seen.add(key)
+                      print('L%d: %r' % (node.lineno, node.value))
+              print()
+          EOF

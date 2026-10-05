@@ -1,0 +1,48 @@
+name: repro-mint-founding
+on:
+  push:
+    paths:
+      - 'press/repro/**'
+      - '.github/workflows/repro-mint.yml'
+  workflow_dispatch:
+
+jobs:
+  repro:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install web3.js same as tq-setup + env probe
+        run: |
+          mkdir -p /tmp/repro && cd /tmp/repro
+          npm init -y >/dev/null 2>&1
+          npm i @solana/web3.js@1
+          node -v
+          node -e "const w=require('@solana/web3.js');console.log('web3 version:',require('@solana/web3.js/package.json').version);console.log('SYSVAR_RENT_PKEY:',typeof w.SYSVAR_RENT_PKEY);console.log('SYSVAR_RENT_ADDRESS:',typeof w.SYSVAR_RENT_ADDRESS);"
+      - name: Fetch pinned failing v1 script + throwaway key + unmask stack
+        run: |
+          cd /tmp/repro
+          curl -sL -o mint_founding.cjs https://gist.githubusercontent.com/jekeymer/2633c4d55ccc4bec2443b8fa27593168/raw/4c88700efdba378509699ba6875abb649dec4555/mint_founding.cjs
+          node -e "const {Keypair}=require('@solana/web3.js');const fs=require('fs');fs.writeFileSync('throwaway.json',JSON.stringify(Array.from(Keypair.generate().secretKey)));"
+          perl -pi -e 's/e\.message \|\| e/\(e \&\& e.stack\) || e/' mint_founding.cjs
+      - name: V1 DRY RUN control (expect toString TypeError)
+        run: |
+          cd /tmp/repro
+          echo '=== V1 DRY RUN (control) ==='
+          node mint_founding.cjs throwaway.json || true
+      - name: Fetch FIXED v2 script + DRY RUN unfunded
+        run: |
+          cd /tmp/repro
+          curl -sL -o mint_founding_v2.cjs https://gist.githubusercontent.com/jekeymer/dc96688263ce2cfe087251bb304e2948/raw/b946bada2275e46f5d3beb6dee9a94818e3f9304/mint_founding.cjs
+          wc -c mint_founding_v2.cjs
+          grep -n 'RENT_SYSVAR' mint_founding_v2.cjs || true
+          echo '=== V2 DRY RUN (unfunded) ==='
+          node mint_founding_v2.cjs throwaway.json || true
+      - name: Airdrop attempt + V2 DRY RUN funded (program-level sim)
+        run: |
+          cd /tmp/repro
+          node -e "const {Connection,Keypair}=require('@solana/web3.js');const fs=require('fs');(async()=>{const k=Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync('throwaway.json'))));const c=new Connection('https://api.devnet.solana.com','confirmed');for(let i=0;i<3;i++){try{const s=await c.requestAirdrop(k.publicKey,1e9);await c.confirmTransaction(s,'confirmed');console.log('airdrop ok');break;}catch(e){console.log('airdrop try',i+1,'failed:',e.message);await new Promise(r=>setTimeout(r,2000));}}const b=await c.getBalance(k.publicKey);console.log('balance lamports:',b);})().catch(e=>console.log('probe failed:',e.message));"
+          echo '=== V2 DRY RUN (funded if airdrop worked) ==='
+          node mint_founding_v2.cjs throwaway.json || true

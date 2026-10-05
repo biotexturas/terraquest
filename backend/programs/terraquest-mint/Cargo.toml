@@ -1,0 +1,39 @@
+[package]
+name = "terraquest-mint"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "terraquest_mint"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = "0.31.1"
+anchor-spl = { version = "0.31.1", features = ["metadata"] }
+ed25519-dalek = { version = "2", default-features = false, features = ["std"] }
+
+# Test harness (T1-T6). LiteSVM 0.7.1 is the line whose solana deps are 2.x,
+# matching anchor-lang 0.31.1's solana-program ^2. Do NOT bump to 0.8.x
+# (solana ^3.0); that split solana-pubkey across majors and the program's
+# Pubkey stops being the test's. See tests/version_smoke.rs.
+[dev-dependencies]
+litesvm = "0.7.1"
+solana-sdk = "2"
+# Tx construction in tests: Message/Transaction/Keypair/Signer are optional
+# deps behind solana-sdk's "full" feature, so depend on the exact crates
+# LiteSVM itself uses instead of guessing feature flags.
+solana-keypair = "2"
+solana-message = "2"
+solana-signer = "2"
+solana-transaction = "2"
+# LiteSVM::with_compute_budget - the default 200k CU per instruction is too
+# small for ed25519 verify + the Metaplex metadata CPI on the happy-path mint.
+solana-compute-budget = "2"
