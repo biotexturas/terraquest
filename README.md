@@ -17,7 +17,7 @@ TerraQuest is built by [Biotexturas](https://biotexturas.org), a collective work
 ## What is in this repository
 
 - `backend/` — the Solana Anchor program (the datagram mint) plus the CV pipeline scripts and analysis. Keys-free copy: no keypair files, no git history carried over. Runs on Solana devnet.
-- The **frontend** lives in its own public repository: https://github.com/jekeymer/terraquest-frontend — the player-facing site (static HTML/JS): landing page, TerraScope Observatory, Seek & Track, Knowledge Engrams deck, Alife Ecology sim, Terrain Console, Ecosystem Arena, My workbench.
+- The **frontend** lives in its own public repository: https://github.com/jekeymer/terraquest-frontend — the player-facing site (static HTML/JS): landing page, TerraScope Observatory, Seek & Track, Knowledge Engrams deck, Alife Ecology sim, Terrain Console, Battle Arena, My workbench.
 
 ## The backend
 
@@ -34,6 +34,8 @@ The `backend/` tree is a keys-free mirror of the mint pipeline — a pinned snap
 Supporting pieces: `backend/scripts/` (client and setup scripts), `backend/.github/workflows/` (CI: Anchor build + the T1-T6 test suite — happy path, double-mint, replay, spoof, tamper, rogue device — plus cargo and CV tests, all green before anything ships), pinned build config in `Anchor.toml` / `Cargo.toml`.
 
 Keypair files are deliberately not included anywhere in this repository — the import pipeline hard-fails if a `keys/` path appears in any bundle.
+
+The player-facing frontend lives in [jekeymer/terraquest-frontend](https://github.com/jekeymer/terraquest-frontend) — public since 2026-10-05.
 
 ## Attestations
 
